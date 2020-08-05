@@ -2,24 +2,24 @@ var data = require('../data-store');
 var projects = data.getProjects();
 var router = require('express').Router();
 
-router.get('/projects', (req, res, next) => {
+router.get('/', (req, res, next) => {
     const projectsOrdered = projects.sort((a, b) => a.id - b.id)
-    res.statusCode(200).send(projects);
+    res.status(200).send(projects);
 })
 
-router.get('/projects/:id', (req, res, next) => {
-    const id = req.params.id;
+router.get('/active', (req, res, next) => {
+    const response = sortActive(projects);
+    res.status(200).send(response);
+})
+
+router.get('/:id', (req, res, next) => {
+    const id = parseInt(req.params.id);
     const project = projects.find((project) => project.id === id);
     if (project) {
-        res.statusCode(200).send(project)
+        res.status(200).send(project)
     } else {
-        res.statusCode(404).send({message: 'No Project Found'});
+        res.status(404).send({message: 'No Project Found'});
     }
-})
-
-router.get('/projects/active', (req, res, next) => {
-    const projects = sortActive(projects);
-    res.statusCode(200).send(projects);
 })
 
 function sortActive(projects) {
